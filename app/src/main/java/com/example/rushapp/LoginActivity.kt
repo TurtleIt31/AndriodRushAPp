@@ -1,5 +1,6 @@
 package com.example.rushapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
@@ -40,8 +41,14 @@ class LoginActivity : ComponentActivity() {
                 val userType = cursor.getString(cursor.getColumnIndexOrThrow("userType")) // Ensure column name is correct
                 Toast.makeText(this, "Login Successful. User type: $userType", Toast.LENGTH_SHORT).show()
 
-                // You can now store or use the userType as needed, for example:
-                // SharedPreferences or navigation logic, etc.
+                // Navigate to ProfileActivity
+                val intent = Intent(this, ProfileActivity::class.java)
+                // Optionally, you can pass data (e.g., userType) to the ProfileActivity
+                intent.putExtra("userType", userType)
+                startActivity(intent)
+
+                // Finish current activity if you want to prevent the user from returning to the login screen
+                finish()
             } else {
                 // Invalid credentials
                 Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_SHORT).show()
