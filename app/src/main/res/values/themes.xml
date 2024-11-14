@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.RushApp" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar" />
+
+    <style name="CircleImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+        <item name="borderWidth">3dp</item>
+    </style>
+</resources>

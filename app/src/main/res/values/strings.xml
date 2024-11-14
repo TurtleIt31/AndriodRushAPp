@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">RushApp</string>
+    <string name="intro_text">Welcome\nTo Rush Mechanics</string>
+    <string name="intro_subtitle">Developed by \nThe Pokemon Group</string>
+    <string name="title_activity_login">Activity_login</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_create_account">CreateAccountActivity</string>
+</resources>
