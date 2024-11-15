@@ -24,73 +24,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/bottom_wave" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="32dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <LinearLayout
-                android:id="@+id/facebookBtn1"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="16dp"
-                android:layout_weight="0.5"
-                android:background="@drawable/white_bg"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/fbIcon1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:srcCompat="@drawable/facebook" />
-
-                <TextView
-                    android:id="@+id/fbLabel1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:text="Facebook"
-                    android:textColor="@color/red"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/googleBtn1"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="16dp"
-                android:layout_weight="0.5"
-                android:background="@drawable/white_border"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageView121"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:srcCompat="@drawable/google" />
-
-                <TextView
-                    android:id="@+id/googleLabel1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:text="Google"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
@@ -135,7 +68,6 @@
                 android:hint="Enter your Email"
                 android:inputType="text"
                 android:padding="12dp"
-                android:text="Name"
                 android:textSize="18sp" />
 
             <TextView
@@ -158,7 +90,6 @@
                 android:hint="Enter your Password"
                 android:inputType="textPassword"
                 android:padding="12dp"
-                android:text="Name"
                 android:textSize="18sp" />
 
 
@@ -167,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="Forgot Password? Silly Goose"
+                android:text="Forgot Password?"
                 android:textAlignment="center" />
 
             <LinearLayout
@@ -190,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_marginEnd="24dp"
-                    android:text="Or Login With"
+                    android:text="Proceed To"
                     android:textSize="16sp" />
 
                 <View
@@ -209,22 +140,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="32dp"
+                android:gravity="center"
                 android:background="@drawable/orange_bg"
                 android:text="Login"
                 android:textColor="@color/white"
                 android:textSize="24sp" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/registerTextBtn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="44dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/orange_bg"
+                android:gravity="center"
                 android:text="Register"
-                android:textColor="@color/black"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                android:textColor="@color/white"
+                android:textSize="24sp" />
 
         </LinearLayout>
+
+
     </ScrollView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -245,72 +180,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/bottom_wave" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="32dp"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/facebookBtn"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="16dp"
-                android:layout_weight="0.5"
-                android:background="@drawable/white_bg"
-                android:orientation="horizontal">
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imageView6"
+                android:layout_width="125dp"
+                android:layout_height="125dp"
+                android:elevation="3dp"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:shapeAppearanceOverlay="@style/CircleImageView"
+                app:strokeColor="@color/white"
+                app:strokeWidth="5dp"
+                tools:srcCompat="@drawable/profile" />
 
-                <ImageView
-                    android:id="@+id/fbIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:srcCompat="@drawable/facebook" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
-                    android:id="@+id/fbLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:text="Facebook"
-                    android:textColor="@color/red"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/googleBtn"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="16dp"
-                android:layout_weight="0.5"
-                android:background="@drawable/white_border"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageView12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:srcCompat="@drawable/google" />
-
-                <TextView
-                    android:id="@+id/googleLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:text="Google"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
