@@ -1,12 +1,13 @@
 package com.example.rushapp
 
-import Data.Models.User
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.rushapp.data.model.User
 
 class UserTableAdapter(
     private val userList: List<User>, // List of user data
