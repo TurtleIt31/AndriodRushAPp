@@ -56,7 +56,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageView3"
                     app:shapeAppearanceOverlay="@style/CircleImageView"
-                    app:strokeColor="@color/white"
+                    app:strokeColor="#FDFDFD"
                     app:strokeWidth="5dp"
                     tools:srcCompat="@drawable/profile" />
 
@@ -87,12 +87,13 @@
 
                     <Button
                         android:id="@+id/buttonView5"
-                        android:layout_width="wrap_content"
+                        android:layout_width="251dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_weight="1"
+                        android:background="@drawable/orange_bg"
+                        android:gravity="center"
                         android:text="Edit Profile"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -115,12 +116,13 @@
 
                     <Button
                         android:id="@+id/buttonView6"
-                        android:layout_width="wrap_content"
+                        android:layout_width="251dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_weight="1"
+                        android:background="@drawable/orange_bg"
+                        android:gravity="center"
                         android:text="Schedule Appointment"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -142,13 +144,14 @@
                         app:srcCompat="@drawable/edit_profile" />
 
                     <Button
-                        android:id="@+id/ButtonView7"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/buttonView7"
+                        android:layout_width="251dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_weight="1"
+                        android:background="@drawable/orange_bg"
+                        android:gravity="center"
                         android:text="Manage Vehicles"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -169,16 +172,17 @@
                     android:layout_marginStart="16dp"
                     app:srcCompat="@drawable/notification" />
 
-                <Button
-                    android:id="@+id/buttonView9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:text="View Invoices"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    <Button
+                        android:id="@+id/buttonView9"
+                        android:layout_width="251dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:background="@drawable/orange_bg"
+                        android:gravity="center"
+                        android:text="View Invoices"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
             </LinearLayout>
                 <LinearLayout
@@ -199,12 +203,13 @@
 
                     <Button
                         android:id="@+id/buttonView10"
-                        android:layout_width="wrap_content"
+                        android:layout_width="251dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_weight="1"
+                        android:background="@drawable/orange_bg"
+                        android:gravity="center"
                         android:text="My Mechanics"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
