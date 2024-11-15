@@ -1,12 +1,12 @@
-package Data.Models
+package com.example.rushapp.data.model
 
 data class User(
-    val userId: Long,
-    val mechanicId: Long?,
-    val customerId: Long?,
-    var name: String,  // `var` makes this mutable and provides both getter and setter
-    var email: String,
-    var phone: String,
-    var userType: String,
-    var password: String
+    val userId: Long? = null, // Immutable, can be left null or use default value
+    val mechanicId: Long? = null, // Immutable
+    val customerId: Long? = null, // Immutable
+    var name: String, // Mutable
+    var userType: String, // Mutable if necessary
+    var email: String = "", // Mutable
+    var phone: String = "", // Mutable
+    var password: String = "" // Mutable
 )
