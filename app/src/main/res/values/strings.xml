@@ -5,4 +5,7 @@
     <string name="title_activity_login">Activity_login</string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_create_account">CreateAccountActivity</string>
+    <string name="title_activity_edit_user">EditUserActivity</string>
+    <string name="User_Detail">EditUserActivity</string>
+    <string name="edit_profile_description">EditUserActivity</string>
 </resources>
