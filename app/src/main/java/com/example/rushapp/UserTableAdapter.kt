@@ -1,6 +1,6 @@
 package com.example.rushapp
 
-import Data.UserDAO
+import Data.Models.User
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class UserTableAdapter(
-    private val userList: List<UserDAO>, // List of user data
-    private val onEditClick: (UserDAO) -> Unit // Lambda function for handling edit clicks
+    private val userList: List<User>, // List of user data
+    private val onEditClick: (User) -> Unit // Lambda function for handling edit clicks
 ) : RecyclerView.Adapter<UserTableAdapter.UserTableViewHolder>() {
 
     class UserTableViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,7 +25,7 @@ class UserTableAdapter(
 
     override fun onBindViewHolder(holder: UserTableViewHolder, position: Int) {
         val user = userList[position]
-        holder.userDetailText.text = "${user.name} - ${user.type}" // Bind data to the TextView
+        holder.userDetailText.text = "${user.name} - ${user.userType}" // Bind data to the TextView
         holder.editIcon.setOnClickListener {
             onEditClick(user) // Handle the click event for the edit icon
         }
