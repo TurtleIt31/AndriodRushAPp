@@ -33,6 +33,15 @@
         app:layout_constraintTop_toBottomOf="@+id/appointmentsHeading" />
 
     <Button
+        android:id="@+id/dateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Date"
+        tools:layout_editor_absoluteX="250dp"
+        tools:layout_editor_absoluteY="707dp"
+        tools:ignore="MissingConstraints" />
+
+    <Button
         android:id="@+id/addAppointmentButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

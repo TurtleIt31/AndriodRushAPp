@@ -8,4 +8,7 @@
     <string name="title_activity_edit_user">EditUserActivity</string>
     <string name="User_Detail">EditUserActivity</string>
     <string name="edit_profile_description">EditUserActivity</string>
+    <string name="title_activity_bookings">BookingsActivity</string>
+    <string name="title_activity_invoices">InvoicesActivity</string>
+    <string name="title_activity_vehicle">VehicleActivity</string>
 </resources>

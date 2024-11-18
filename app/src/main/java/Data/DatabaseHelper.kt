@@ -497,6 +497,55 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return db.delete("InvoiceItems", "itemId = ?", arrayOf(id.toString()))
     }
 
+    // --- Bookings Table ---
+
+    fun insertBooking(
+        serviceId: Long,
+        mechanicId: Long,
+        vehicleId: Long,
+        customerId: Long,
+        bookingDate: String
+    ): String {
+        val db = writableDatabase
+        val values = ContentValues().apply {
+            put("serviceId", serviceId)
+            put("mechanicId", mechanicId)
+            put("vehicleId", vehicleId)
+            put("customerId", customerId)
+            put("bookingDate", bookingDate)
+            put("status", "Not Complete")
+        }
+        val result = db.insert("Bookings", null, values)
+        return if (result != -1L) {
+            "Booking successfully created."
+        } else {
+            "Error: Could not create booking."
+        }
+    }
+
+    fun getBooking(db: SQLiteDatabase, bookingId: Long): Cursor {
+        return db.query("Bookings", null, "bookingId = ?", arrayOf(bookingId.toString()), null, null, null)
+    }
+
+    fun updateBooking(db: SQLiteDatabase, bookingId: Long, serviceId: Long, mechanicId: Long, vehicleId: Long, customerId: Long, bookingDate: String, bookingStatus: String): Int {
+        val values = ContentValues().apply {
+            put("serviceId", serviceId)
+            put("mechanicId", mechanicId)
+            put("vehicleId", vehicleId)
+            put("customerId", customerId)
+            put("bookingDate", bookingDate)
+            put("status", bookingStatus)
+        }
+        return db.update("Bookings", values, "bookingId = ?", arrayOf(bookingId.toString()))
+    }
+
+    fun deleteBooking(db: SQLiteDatabase, bookingId: Long): Int {
+        return db.delete("Bookings", "bookingId = ?", arrayOf(bookingId.toString()))
+    }
+
+
+
+
 
 
 }

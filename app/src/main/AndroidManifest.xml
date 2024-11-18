@@ -13,6 +13,21 @@
         android:theme="@style/Theme.RushApp"
         tools:targetApi="31">
         <activity
+            android:name=".VehicleActivity"
+            android:exported="false"
+            android:label="@string/title_activity_vehicle"
+            android:theme="@style/Theme.RushApp" />
+        <activity
+            android:name=".InvoicesActivity"
+            android:exported="false"
+            android:label="@string/title_activity_invoices"
+            android:theme="@style/Theme.RushApp" />
+        <activity
+            android:name=".BookingsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_bookings"
+            android:theme="@style/Theme.RushApp" />
+        <activity
             android:name=".EditUserActivity"
             android:exported="false"
             android:label="@string/title_activity_edit_user"
