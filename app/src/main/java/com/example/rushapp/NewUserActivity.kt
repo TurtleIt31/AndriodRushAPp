@@ -12,7 +12,7 @@ import com.example.rushapp.ui.theme.RushAppTheme
 class NewUserActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.register_account) // Load the main layout
+        setContentView(R.layout.register_account) // Load the register account layout
         val dataHandler = DataHandler(this)
         dataHandler.populateSampleData()
 
