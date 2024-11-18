@@ -86,7 +86,7 @@
                         app:srcCompat="@drawable/edit_profile" />
 
                     <Button
-                        android:id="@+id/buttonView5"
+                        android:id="@+id/EditProfileBtn"
                         android:layout_width="251dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -115,7 +115,7 @@
                         app:srcCompat="@drawable/social" />
 
                     <Button
-                        android:id="@+id/buttonView6"
+                        android:id="@+id/scheduleAppBtn"
                         android:layout_width="251dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"

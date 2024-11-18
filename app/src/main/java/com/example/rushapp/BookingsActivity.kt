@@ -48,10 +48,10 @@ class BookingsActivity : ComponentActivity() {
     // Function to create a booking using foreign keys and selected date
     private fun createBookingWithForeignKeys(db: DatabaseHelper) {
         // Example fetching of foreign key values (replace with your actual logic)
-        val serviceID: Long? = fetchForeignKeyID(db, "services", "criteria")?.toLong()
-        val mechanicID: Long? = fetchForeignKeyID(db, "mechanics", "criteria")?.toLong()
-        val vehicleID: Long? = fetchForeignKeyID(db, "vehicles", "criteria")?.toLong()
-        val customerID: Long = getSignedInCustomerID().toLong() // Assuming it returns an Int
+        val serviceID: Long? = fetchForeignKeyID(db, "Services", "desired_criteria")
+        val mechanicID: Long? = fetchForeignKeyID(db, "Mechanics", "desired_criteria")
+        val vehicleID: Long? = fetchForeignKeyID(db, "Vehicles", "desired_criteria")
+        val customerId: Long = getSignedInCustomerID()
 
         // Check for valid foreign key IDs and selected date
         if (serviceID == null || mechanicID == null || vehicleID == null || selectedDate == null) {
@@ -59,17 +59,17 @@ class BookingsActivity : ComponentActivity() {
             return
         }
 
-        // Insert the booking with foreign keys
-        val result = db.insertBooking(serviceID, mechanicID, vehicleID, customerID, selectedDate!!)
-        Toast.makeText(this, result, Toast.LENGTH_SHORT).show()
+        // Insert the booking with foreign keys (Assuming `insertBooking` method exists and is defined correctly)
+        val resultMessage = db.insertBooking(serviceID, mechanicID, vehicleID, customerId, selectedDate!!)
+        Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show()
     }
 
     // Function to fetch foreign key ID from the database (simplified example)
-    private fun fetchForeignKeyID(db: DatabaseHelper, tableName: String, criteria: String): Int? {
+    private fun fetchForeignKeyID(db: DatabaseHelper, tableName: String, criteria: String): Long? {
         val dbReadable = db.readableDatabase
         val cursor = dbReadable.rawQuery("SELECT id FROM $tableName WHERE criteriaColumn = ?", arrayOf(criteria))
         return if (cursor.moveToFirst()) {
-            val id = cursor.getInt(cursor.getColumnIndexOrThrow("id"))
+            val id = cursor.getLong(cursor.getColumnIndexOrThrow("id"))
             cursor.close()
             id
         } else {
@@ -78,9 +78,17 @@ class BookingsActivity : ComponentActivity() {
         }
     }
 
-    // Dummy function to retrieve the signed-in customer ID (replace with your actual logic)
-    private fun getSignedInCustomerID(): Int {
+    // Function to retrieve the signed-in customer's ID
+    private fun getSignedInCustomerID(): Long {
         val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        return sharedPreferences.getInt("customerID", -1) // Replace "customerID" with your actual key
+        val customerId = sharedPreferences.getLong("customerId", -1L) // Replace "customerId" with your key if different
+
+        if (customerId == -1L) {
+            // Handle the case where customerId is not found or is invalid
+            Toast.makeText(this, "Error: Customer not signed in.", Toast.LENGTH_SHORT).show()
+            // Optionally, you can redirect to a login screen or other appropriate handling
+        }
+
+        return customerId
     }
 }

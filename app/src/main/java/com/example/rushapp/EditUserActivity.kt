@@ -17,7 +17,6 @@ import com.example.rushapp.ui.theme.RushAppTheme
 class EditUserActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
     }
     private fun fetchUsersFromDatabase(): List<User> {

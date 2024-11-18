@@ -1,4 +1,5 @@
 package com.example.rushapp
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -18,19 +19,17 @@ class LoginActivity : ComponentActivity() {
         val usernameField = findViewById<EditText>(R.id.emailEdt)
         val passwordField = findViewById<EditText>(R.id.passwordEdt)
 
-
         // Set up the login check logic
         loginButton.setOnClickListener {
             val email = usernameField.text.toString() // Assuming you're using email for login
             val password = passwordField.text.toString()
-
 
             val dbHelper = DatabaseHelper(this)
             val db = dbHelper.readableDatabase
 
             val cursor = db.query(
                 "Users", // Ensure this matches your actual table name
-                arrayOf("userType"), // Replace with the actual column name for user type if necessary
+                arrayOf("email", "userType"), // Retrieve email and userType
                 "email = ? AND passwordEntry = ?", // Adjust column names as per your schema
                 arrayOf(email, password),
                 null,
@@ -40,13 +39,13 @@ class LoginActivity : ComponentActivity() {
 
             if (cursor.moveToFirst()) {
                 // User found
-                val userType = cursor.getString(cursor.getColumnIndexOrThrow("userType")) // Ensure column name is correct
+                val userEmail = cursor.getString(cursor.getColumnIndexOrThrow("email")) // Retrieve email
+                val userType = cursor.getString(cursor.getColumnIndexOrThrow("userType")) // Retrieve userType
+                // Continue with navigation
                 Toast.makeText(this, "Login Successful. User type: $userType", Toast.LENGTH_SHORT).show()
-
-                // Navigate to ProfileActivity
                 val intent = Intent(this, ProfileActivity::class.java)
-                // Optionally, you can pass data (e.g., userType) to the ProfileActivity
-                intent.putExtra("userType", userType)
+                intent.putExtra("userType", userType) // Optionally, pass userType if needed
+                intent.putExtra("email", userEmail) // Optionally, pass email if needed
                 startActivity(intent)
 
                 // Finish current activity if you want to prevent the user from returning to the login screen
@@ -60,10 +59,9 @@ class LoginActivity : ComponentActivity() {
             db.close()
         }
 
-        registerButton.setOnClickListener{
+        registerButton.setOnClickListener {
             val intent = Intent(this, NewUserActivity::class.java)
             startActivity(intent)
         }
-
     }
 }
