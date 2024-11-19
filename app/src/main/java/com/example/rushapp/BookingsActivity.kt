@@ -26,7 +26,7 @@ class BookingsActivity : ComponentActivity() {
 
         // Example button to create booking
         findViewById<Button>(R.id.addAppointmentButton)?.setOnClickListener {
-            createBookingWithForeignKeys(db)
+            createBooking(db)
         } ?: Log.e("BookingsActivity", "Error: addAppointmentButton not found in layout")
     }
 
@@ -46,70 +46,22 @@ class BookingsActivity : ComponentActivity() {
         ).show()
     }
 
-    // Function to create a booking using foreign keys and selected date
-    private fun createBookingWithForeignKeys(db: DatabaseHelper) {
+    // Function to create a booking with only the date
+    private fun createBooking(db: DatabaseHelper) {
         try {
-            // Example fetching of foreign key values (replace with your actual logic)
-            val serviceID: Long? = fetchForeignKeyID(db, "Services", "desired_criteria")
-            val mechanicID: Long? = fetchForeignKeyID(db, "Mechanics", "desired_criteria")
-            val vehicleID: Long? = fetchForeignKeyID(db, "Vehicles", "desired_criteria")
-            val customerId: Long = getSignedInCustomerID()
-
-            // Check for valid foreign key IDs and selected date
-            if (serviceID == null) {
-                Log.e("BookingsActivity", "Error: serviceID is null")
-                Toast.makeText(this, "Error: Service ID not found.", Toast.LENGTH_SHORT).show()
-                return
-            }
-            if (mechanicID == null) {
-                Log.e("BookingsActivity", "Error: mechanicID is null")
-                Toast.makeText(this, "Error: Mechanic ID not found.", Toast.LENGTH_SHORT).show()
-                return
-            }
-            if (vehicleID == null) {
-                Log.e("BookingsActivity", "Error: vehicleID is null")
-                Toast.makeText(this, "Error: Vehicle ID not found.", Toast.LENGTH_SHORT).show()
-                return
-            }
             if (selectedDate == null) {
                 Log.e("BookingsActivity", "Error: selectedDate is null")
                 Toast.makeText(this, "Error: Please select a date.", Toast.LENGTH_SHORT).show()
                 return
             }
 
-            // Insert the booking with foreign keys (Assuming `insertBooking` method exists and is defined correctly)
-            val resultMessage = db.insertBooking(serviceID, mechanicID, vehicleID, customerId, selectedDate!!)
+            // Insert the booking with only the date
+            val resultMessage = db.insertBooking(selectedDate!!)
             Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show()
 
         } catch (e: Exception) {
             Log.e("BookingsActivity", "Error creating booking: ${e.message}", e)
             Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
         }
-    }
-
-    // Function to fetch foreign key ID from the database (simplified example)
-    private fun fetchForeignKeyID(db: DatabaseHelper, tableName: String, criteria: String): Long? {
-        val dbReadable = db.readableDatabase
-        var cursor: android.database.Cursor? = null
-        return try {
-            cursor = dbReadable.rawQuery("SELECT id FROM $tableName WHERE criteriaColumn = ?", arrayOf(criteria))
-            if (cursor.moveToFirst()) {
-                cursor.getLong(cursor.getColumnIndexOrThrow("id"))
-            } else {
-                Log.e("BookingsActivity", "Error: No matching ID found in $tableName for criteria $criteria")
-                null
-            }
-        } catch (e: Exception) {
-            Log.e("BookingsActivity", "Error fetching foreign key ID from $tableName: ${e.message}", e)
-            null
-        } finally {
-            cursor?.close()
-        }
-    }
-
-    // Dummy function to retrieve the signed-in customer ID (replace with your actual logic)
-    private fun getSignedInCustomerID(): Long {
-        val sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        return sharedPreferences.getLong("customerID", -1L) // Replace "customerID" with your actual key
     }
 }

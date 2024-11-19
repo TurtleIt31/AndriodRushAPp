@@ -500,18 +500,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     // --- Bookings Table ---
 
     fun insertBooking(
-        serviceId: Long,
-        mechanicId: Long,
-        vehicleId: Long,
-        customerId: Long,
+
         bookingDate: String
     ): String {
         val db = writableDatabase
         val values = ContentValues().apply {
-            put("serviceId", serviceId)
-            put("mechanicId", mechanicId)
-            put("vehicleId", vehicleId)
-            put("customerId", customerId)
             put("bookingDate", bookingDate)
             put("status", "Not Complete")
         }
