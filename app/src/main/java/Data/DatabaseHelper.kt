@@ -11,7 +11,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "RushApp.db"
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 4
 
         // Workshops table
         private const val TABLE_WORKSHOPS = "Workshops"
@@ -519,6 +519,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun getBooking(db: SQLiteDatabase, bookingId: Long): Cursor {
         return db.query("Bookings", null, "bookingId = ?", arrayOf(bookingId.toString()), null, null, null)
     }
+    //gets bookings for certain users
+    fun getBookingsForUser(db: SQLiteDatabase, userEmail: String): Cursor {
+        // Adjust the join condition based on your actual schema
+        val query = """
+        SELECT b.*
+        FROM Bookings b
+        INNER JOIN Users u ON b.customerId = u.userId
+        WHERE u.email = ?
+        ORDER BY b.bookingDate ASC
+    """
+        return db.rawQuery(query, arrayOf(userEmail))
+    }
+
 
     fun updateBooking(db: SQLiteDatabase, bookingId: Long, serviceId: Long, mechanicId: Long, vehicleId: Long, customerId: Long, bookingDate: String, bookingStatus: String): Int {
         val values = ContentValues().apply {

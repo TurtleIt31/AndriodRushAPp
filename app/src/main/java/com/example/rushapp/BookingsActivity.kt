@@ -3,7 +3,9 @@ package com.example.rushapp
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.ListView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import java.util.Calendar
@@ -18,6 +20,9 @@ class BookingsActivity : ComponentActivity() {
 
         // Initialize the database helper
         val db = DatabaseHelper(this)
+
+        // Display bookings for the logged-in user
+        displayUserBookings(db)
 
         // Find the date button by its ID and set an onClickListener
         findViewById<Button>(R.id.dateButton)?.setOnClickListener { dateButton ->
@@ -59,9 +64,41 @@ class BookingsActivity : ComponentActivity() {
             val resultMessage = db.insertBooking(selectedDate!!)
             Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show()
 
+            // Refresh the displayed bookings
+            displayUserBookings(db)
+
         } catch (e: Exception) {
             Log.e("BookingsActivity", "Error creating booking: ${e.message}", e)
             Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
         }
+    }
+
+    // Function to fetch and display bookings for the logged-in user
+    private fun displayUserBookings(db: DatabaseHelper) {
+        val userEmail = getSignedInEmail() // Retrieve the logged-in user's email from the intent
+        val cursor = db.getBookingsForUser(db.readableDatabase, userEmail)
+
+        val bookingsList = mutableListOf<String>() // List of strings to collect booking details
+
+        if (cursor.moveToFirst()) {
+            do {
+                val bookingDate = cursor.getString(cursor.getColumnIndexOrThrow("bookingDate"))
+                val status = cursor.getString(cursor.getColumnIndexOrThrow("status"))
+                bookingsList.add("Date: $bookingDate, Status: $status")
+            } while (cursor.moveToNext())
+        } else {
+            bookingsList.add("No bookings found for the user.")
+            Log.d("BookingsActivity", "No bookings found for the user.")
+        }
+        cursor.close()
+
+        // Display the bookings in a Toast message
+        val message = bookingsList.joinToString(separator = "\n")
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+
+    // Function to retrieve the email passed from the login activity
+    private fun getSignedInEmail(): String {
+        return intent.getStringExtra("email") ?: ""
     }
 }
