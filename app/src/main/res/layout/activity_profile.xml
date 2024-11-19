@@ -144,7 +144,7 @@
                         app:srcCompat="@drawable/edit_profile" />
 
                     <Button
-                        android:id="@+id/buttonView7"
+                        android:id="@+id/ManageVehiclesBtn"
                         android:layout_width="251dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -173,7 +173,7 @@
                     app:srcCompat="@drawable/notification" />
 
                     <Button
-                        android:id="@+id/buttonView9"
+                        android:id="@+id/ViewInvoicesBtn"
                         android:layout_width="251dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -202,7 +202,7 @@
                         app:srcCompat="@drawable/exit" />
 
                     <Button
-                        android:id="@+id/buttonView10"
+                        android:id="@+id/MyMechanicsBtn"
                         android:layout_width="251dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"

@@ -21,6 +21,38 @@ class ProfileActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
 
+        val appointmentsButton = findViewById<Button>(R.id.scheduleAppBtn)
+        val editProfileButton = findViewById<Button>(R.id.EditProfileBtn)
+        val vehiclesButton = findViewById<Button>(R.id.ManageVehiclesBtn)
+        val invoicesButton = findViewById<Button>(R.id.ViewInvoicesBtn)
+        val mechanicsButton = findViewById<Button>(R.id.MyMechanicsBtn)
+
+        appointmentsButton.setOnClickListener {
+            val intent = Intent(this, BookingsActivity::class.java)
+            startActivity(intent)
+        }
+        editProfileButton.setOnClickListener {
+            val intent = Intent(this, BookingsActivity::class.java)
+            startActivity(intent)
+        }
+        vehiclesButton.setOnClickListener {
+            val intent = Intent(this, BookingsActivity::class.java)
+            startActivity(intent)
+        }
+        invoicesButton.setOnClickListener {
+            val intent = Intent(this, BookingsActivity::class.java)
+            startActivity(intent)
+        }
+        mechanicsButton.setOnClickListener {
+            val intent = Intent(this, BookingsActivity::class.java)
+            startActivity(intent)
+        }
+
+
+
+
+
+
 
 
 

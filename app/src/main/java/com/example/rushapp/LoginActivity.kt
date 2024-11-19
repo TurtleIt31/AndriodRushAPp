@@ -58,7 +58,7 @@ class LoginActivity : ComponentActivity() {
             cursor.close()
             db.close()
         }
-
+        //register new user
         registerButton.setOnClickListener {
             val intent = Intent(this, NewUserActivity::class.java)
             startActivity(intent)
