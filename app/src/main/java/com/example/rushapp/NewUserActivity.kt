@@ -16,9 +16,17 @@ class NewUserActivity : ComponentActivity() {
         val dataHandler = DataHandler(this)
         dataHandler.populateSampleData()
 
-        // Start the Register activity when button is clicked
-        val button = findViewById<Button>(R.id.registerTextBtn)
-        button?.setOnClickListener {
+       /* val backButton = findViewById<Button>(R.id.registerTextBtn)
+        backButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+
+            BACK BUTTON CODE, BREAKS THE ID SECTION FOR SOME REASON */
+
+            // Start the Register activity when button is clicked
+            val registerButton = findViewById<Button>(R.id.registerTextBtn2) // Use the correct ID for the register button
+            registerButton.setOnClickListener {
             val usernameField = findViewById<EditText>(R.id.emailEdt)
             val passwordField = findViewById<EditText>(R.id.passwordEdt)
             val nameField = findViewById<EditText>(R.id.nameEdt)
@@ -73,8 +81,7 @@ class NewUserActivity : ComponentActivity() {
                         put("passwordEntry", password)
                         put("phone", phone)
                         put("userType", userType)
-                        // You can add "customerId" or "mechanicId" here if applicable
-                        put("customerId", generateCustomerId()) // Example function to generate a customerId
+                        put("customerId", generateCustomerId().toInt())
                         putNull("mechanicId")
                     }
 
