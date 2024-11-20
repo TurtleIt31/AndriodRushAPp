@@ -2,6 +2,7 @@ package com.example.rushapp
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 
 class DataHandler(context: Context) {
@@ -53,6 +54,13 @@ class DataHandler(context: Context) {
         db.close()
     }
 
+    fun getBookingsForUser(db: SQLiteDatabase, email: String): Cursor {
+        return db.rawQuery(
+            "SELECT * FROM bookings WHERE userEmail = ?",
+            arrayOf(email)
+        )
+    }
+
     private fun getServiceIdByDetails(
         db: SQLiteDatabase,
         mechanicId: Long,
@@ -97,6 +105,8 @@ class DataHandler(context: Context) {
         )
         return cursor.use { it.moveToFirst() } // Return true if a matching row is found
     }
+
+
 
     // Function to get Workshop ID by name
     private fun getWorkshopIdByName(db: SQLiteDatabase, name: String): Long? {

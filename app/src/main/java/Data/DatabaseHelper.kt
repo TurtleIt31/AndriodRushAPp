@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.Cursor
+import android.util.Log
 
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -509,21 +510,57 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
+
+
     fun getBooking(db: SQLiteDatabase, bookingId: Long): Cursor {
         return db.query("Bookings", null, "bookingId = ?", arrayOf(bookingId.toString()), null, null, null)
     }
-    //gets bookings for certain users
     fun getBookingsForUser(db: SQLiteDatabase, userEmail: String): Cursor {
-        // Adjust the join condition based on your actual schema
-        val query = """
-        SELECT b.*
-        FROM Bookings b
-        INNER JOIN Users u ON b.customerId = u.userId
-        WHERE u.email = ?
-        ORDER BY b.bookingDate ASC
-    """
-        return db.rawQuery(query, arrayOf(userEmail))
+            val query = """
+            SELECT b.*, u.userId, u.email
+            FROM Bookings b
+            INNER JOIN Users u ON b.customerId = u.userId
+            WHERE u.email = ?
+            ORDER BY b.bookingDate ASC
+            """
+        Log.d("DatabaseHelper", "Executing query with email: $userEmail")
+
+        val cursor = db.rawQuery(query, arrayOf(userEmail))
+
+        if (cursor.moveToFirst()) {
+            Log.d("DatabaseHelper", "Query returned rows:")
+            do {
+                val userId = cursor.getLong(cursor.getColumnIndexOrThrow("userId"))
+                val customerId = cursor.getLong(cursor.getColumnIndexOrThrow("customerId"))
+                val email = cursor.getString(cursor.getColumnIndexOrThrow("email"))
+
+                Log.d("DatabaseHelper", "userId: $userId, customerId: $customerId, email: $email")
+            } while (cursor.moveToNext())
+        } else {
+            // If no rows are returned, debug the join condition
+            val debugQuery = """
+            SELECT u.userId, u.email
+            FROM Users u
+        """
+            val debugCursor = db.rawQuery(debugQuery, null)
+
+            Log.d("DatabaseHelper", "Query returned no rows. Debugging user table:")
+            if (debugCursor.moveToFirst()) {
+                do {
+                    val debugUserId = debugCursor.getLong(debugCursor.getColumnIndexOrThrow("userId"))
+                    val debugEmail = debugCursor.getString(debugCursor.getColumnIndexOrThrow("email"))
+
+                    Log.d("DatabaseHelper", "Debug userId: $debugUserId, email: $debugEmail")
+                } while (debugCursor.moveToNext())
+            } else {
+                Log.d("DatabaseHelper", "No users found in the Users table.")
+            }
+            debugCursor.close()
+        }
+
+        return cursor
     }
+
 
 
 

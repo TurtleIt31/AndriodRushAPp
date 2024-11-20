@@ -28,10 +28,6 @@ class BookingsActivity : ComponentActivity() {
         // Initialize the database helper
         val db = DatabaseHelper(this)
 
-
-
-
-
         // Display bookings for the logged-in user
         displayUserBookings(db)
 
@@ -106,8 +102,6 @@ class BookingsActivity : ComponentActivity() {
 
         val bookingsList = mutableListOf<String>() // List of strings to collect booking details
 
-
-
         if (cursor.moveToFirst()) {
             do {
                 val bookingDate = cursor.getString(cursor.getColumnIndexOrThrow("bookingDate"))
@@ -127,7 +121,9 @@ class BookingsActivity : ComponentActivity() {
 
     // Function to retrieve the email passed from the login activity
     private fun getSignedInEmail(): String {
-        return intent.getStringExtra("email") ?: ""
+        val email = intent.getStringExtra("email") ?: ""
+        Log.d("BookingsActivity", "Signed-in email: $email") // Log the email for debugging
+        return email
     }
 
 
