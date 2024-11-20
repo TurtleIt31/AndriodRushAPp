@@ -107,7 +107,7 @@
         app:layout_constraintTop_toBottomOf="@+id/phoneEdt" />
 
     <Button
-        android:id="@+id/registerTextBtn" 
+        android:id="@+id/registerTextBtn"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="16dp"
