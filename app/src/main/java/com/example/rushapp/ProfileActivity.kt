@@ -50,13 +50,6 @@ class ProfileActivity : ComponentActivity() {
 
 
 
-
-
-
-
-
-
-
     }
 }
 
