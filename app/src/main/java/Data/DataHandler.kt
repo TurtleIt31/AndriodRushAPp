@@ -4,40 +4,54 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 
 class DataHandler(context: Context) {
 
     private val dbHelper = DatabaseHelper(context)
 
-    // Function to populate sample data
+    // **Populate Sample Data**
     fun populateSampleData() {
         val db = dbHelper.writableDatabase
 
-        // Insert a workshop if not already present
+        // Insert or fetch Workshop
         val workshopId = getWorkshopIdByName(db, "Example Workshop")
             ?: dbHelper.insertWorkshop(db, "Example Workshop", "123 Main Street")
 
-        // Insert a mechanic associated with the workshop if not already present
+        // Insert or fetch Mechanic
         val mechanicId = getMechanicIdByEmail(db, "johndoe@example.com")
             ?: dbHelper.insertMechanic(db, workshopId, "John Doe", "johndoe@example.com", "123-456-7890", "Mechanic")
 
-        // Insert a customer if not already present
+        // Insert or fetch Customer
         val customerId = getCustomerIdByName(db, "Customer")
             ?: dbHelper.insertCustomer(db, "Customer")
 
-        // Insert a user if not already present
+        // Insert or fetch User
         val userId = getUserIdByEmail(db, "alice@example.com")
             ?: dbHelper.insertUser(db, mechanicId, customerId, "Alice Smith", "alice@example.com", "987-654-3210", "Admin", "password123")
 
-        // Insert a vehicle if not already present
+        // Insert or fetch Vehicle
         val vehicleId = getVehicleIdByVin(db, "1HGCM82633A123456")
             ?: dbHelper.insertVehicle(db, userId, "Toyota", "Corolla", 2020, "1HGCM82633A123456")
 
-        // Insert a service if not already present, and retrieve its ID
+        // Insert or fetch Service
         val serviceId = getServiceIdByDetails(db, mechanicId, vehicleId, "2024-11-12")
             ?: dbHelper.insertService(db, mechanicId, vehicleId, "2024-11-12", "Oil Change", "Changed engine oil and filter")
 
-        // Insert a booking if not already present
+        // Insert or fetch Invoice
+        val invoiceId = getInvoiceIdByServiceId(db, serviceId)
+            ?: insertInvoiceWithItems(
+                db,
+                serviceId = serviceId,
+                totalCost = 250.75,
+                invoiceItems = listOf(
+                    "Oil Change" to 50.00,
+                    "Brake Repair" to 150.75,
+                    "Tire Replacement" to 50.00
+                )
+            )
+
+        // Insert Booking if not already present
         if (!isBookingPresent(db, serviceId, mechanicId, vehicleId, customerId, "2024-11-20")) {
             val resultMessage = dbHelper.insertBooking(
                 db,
@@ -48,25 +62,69 @@ class DataHandler(context: Context) {
                 "2024-11-20",
                 "Scheduled"
             )
-            println(resultMessage) // Log or display the result message
+            println(resultMessage)
         }
 
         db.close()
     }
 
-    fun getBookingsForUser(db: SQLiteDatabase, email: String): Cursor {
-        return db.rawQuery(
-            "SELECT * FROM bookings WHERE userEmail = ?",
-            arrayOf(email)
-        )
+    // **Invoice Functions**
+    fun insertInvoiceWithItems(
+        db: SQLiteDatabase,
+        serviceId: Long,
+        totalCost: Double,
+        invoiceItems: List<Pair<String, Double>>? = null
+    ): Long {
+        // Insert Invoice
+        val invoiceValues = ContentValues().apply {
+            put("serviceId", serviceId)
+            put("totalCost", totalCost)
+        }
+
+        val invoiceId = db.insert("Invoices", null, invoiceValues)
+        if (invoiceId == -1L) {
+            Log.e("DataHandler", "Error inserting invoice.")
+            return -1L
+        }
+
+        // Insert Invoice Items
+        invoiceItems?.forEach { (itemName, cost) ->
+            val itemValues = ContentValues().apply {
+                put("invoiceId", invoiceId)
+                put("itemName", itemName)
+                put("cost", cost)
+            }
+
+            val itemId = db.insert("InvoiceItems", null, itemValues)
+            if (itemId == -1L) {
+                Log.e("DataHandler", "Error inserting invoice item: $itemName")
+            }
+        }
+
+        return invoiceId
     }
 
-    private fun getServiceIdByDetails(
-        db: SQLiteDatabase,
-        mechanicId: Long,
-        vehicleId: Long,
-        date: String
-    ): Long? {
+    fun getInvoiceIdByServiceId(db: SQLiteDatabase, serviceId: Long): Long? {
+        val cursor = db.query(
+            "Invoices",
+            arrayOf("invoiceId"),
+            "serviceId = ?",
+            arrayOf(serviceId.toString()),
+            null,
+            null,
+            null
+        )
+        return cursor.use {
+            if (it.moveToFirst()) {
+                it.getLong(it.getColumnIndexOrThrow("invoiceId"))
+            } else {
+                null
+            }
+        }
+    }
+
+    // **Service Functions**
+    private fun getServiceIdByDetails(db: SQLiteDatabase, mechanicId: Long, vehicleId: Long, date: String): Long? {
         val cursor = db.query(
             "Services",
             arrayOf("serviceId"),
@@ -85,7 +143,6 @@ class DataHandler(context: Context) {
         }
     }
 
-
     private fun isBookingPresent(
         db: SQLiteDatabase,
         serviceId: Long,
@@ -103,12 +160,10 @@ class DataHandler(context: Context) {
             null,
             null
         )
-        return cursor.use { it.moveToFirst() } // Return true if a matching row is found
+        return cursor.use { it.moveToFirst() }
     }
 
-
-
-    // Function to get Workshop ID by name
+    // **General Get Functions**
     private fun getWorkshopIdByName(db: SQLiteDatabase, name: String): Long? {
         val cursor = db.query(
             "Workshops",
@@ -128,7 +183,6 @@ class DataHandler(context: Context) {
         }
     }
 
-    // Function to get Mechanic ID by email
     private fun getMechanicIdByEmail(db: SQLiteDatabase, email: String): Long? {
         val cursor = db.query(
             "Mechanics",
@@ -148,9 +202,6 @@ class DataHandler(context: Context) {
         }
     }
 
-
-
-    // Function to get Customer ID by name
     private fun getCustomerIdByName(db: SQLiteDatabase, name: String): Long? {
         val cursor = db.query(
             "Customers",
@@ -170,7 +221,6 @@ class DataHandler(context: Context) {
         }
     }
 
-    // Function to get User ID by email
     private fun getUserIdByEmail(db: SQLiteDatabase, email: String): Long? {
         val cursor = db.query(
             "Users",
@@ -190,7 +240,6 @@ class DataHandler(context: Context) {
         }
     }
 
-    // Function to get Vehicle ID by VIN
     private fun getVehicleIdByVin(db: SQLiteDatabase, vin: String): Long? {
         val cursor = db.query(
             "Vehicles",
@@ -209,20 +258,4 @@ class DataHandler(context: Context) {
             }
         }
     }
-
-    // Function to check if a service is present
-    private fun isServicePresent(db: SQLiteDatabase, mechanicId: Long, vehicleId: Long, date: String): Boolean {
-        val cursor = db.query(
-            "Services",
-            arrayOf("serviceId"),
-            "mechanicId = ? AND vehicleId = ? AND date = ?",
-            arrayOf(mechanicId.toString(), vehicleId.toString(), date),
-            null,
-            null,
-            null
-        )
-        return cursor.use { it.moveToFirst() }
-    }
-
-
 }

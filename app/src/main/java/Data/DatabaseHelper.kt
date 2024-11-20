@@ -439,14 +439,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     // --- InvoiceItems Table ---
-    fun insertInvoiceItem(db: SQLiteDatabase, invoiceId: Long, itemName: String, cost: Double): Long {
-        val values = ContentValues().apply {
-            put("invoiceId", invoiceId)
-            put("itemName", itemName)
-            put("cost", cost)
-        }
-        return db.insert("InvoiceItems", null, values)
-    }
+
+
 
     fun getInvoiceItem(db: SQLiteDatabase, id: Long): Cursor {
         return db.query("InvoiceItems", null, "itemId = ?", arrayOf(id.toString()), null, null, null)
