@@ -68,6 +68,67 @@ class DataHandler(context: Context) {
         db.close()
     }
 
+    fun insertNewUser(
+        name: String,
+        email: String,
+        password: String,
+        phone: String,
+        userType: String,
+        mechanicId: Long? = null
+    ): Boolean {
+        val db = dbHelper.writableDatabase // Open the database once
+        return try {
+            // Check if the email already exists
+            if (doesUserExist(email)) {
+                Log.e("DataHandler", "User with email $email already exists.")
+                return false
+            }
+
+            // Register the user as a customer first
+            val customerId = insertCustomer(name, db) // Use the same db instance
+            if (customerId == -1L) {
+                Log.e("DataHandler", "Failed to register as customer for user $name")
+                return false
+            }
+
+            // Insert the user with the generated customerId
+            val values = ContentValues().apply {
+                put("name", name)
+                put("email", email)
+                put("passwordEntry", password)
+                put("phone", phone)
+                put("userType", userType)
+                put("customerId", customerId) // Associate the user with the customerId
+                put("mechanicId", mechanicId) // Nullable field
+            }
+
+            val newRowId = db.insert("Users", null, values)
+            newRowId != -1L // Return true if insertion was successful
+        } catch (e: Exception) {
+            Log.e("DataHandler", "Error inserting new user: ${e.message}")
+            false
+        } finally {
+            db.close() // Close the database only once all operations are complete
+        }
+    }
+
+    fun insertCustomer(name: String, db: SQLiteDatabase): Long {
+        return try {
+            val values = ContentValues().apply {
+                put("name", name) // Insert customer's name
+            }
+            val newRowId = db.insert("Customers", null, values)
+            if (newRowId == -1L) {
+                Log.e("DataHandler", "Error inserting customer: $name")
+            }
+            newRowId // Return the generated customerId
+        } catch (e: Exception) {
+            Log.e("DataHandler", "Error inserting customer: ${e.message}")
+            -1L // Return -1 in case of an error
+        }
+    }
+
+
     // **Invoice Functions**
     fun insertInvoiceWithItems(
         db: SQLiteDatabase,
@@ -102,6 +163,21 @@ class DataHandler(context: Context) {
         }
 
         return invoiceId
+    }
+
+    // **Check if User Exists**
+    fun doesUserExist(email: String): Boolean {
+        val db = dbHelper.readableDatabase // Open database for reading
+        val cursor = db.query(
+            "Users",  // Table name
+            arrayOf("userId"), // Select userId column
+            "email = ?",       // WHERE clause
+            arrayOf(email),    // WHERE arguments
+            null,
+            null,
+            null
+        )
+        return cursor.use { it.moveToFirst() } // True if a record exists
     }
 
     fun getInvoiceIdByServiceId(db: SQLiteDatabase, serviceId: Long): Long? {
@@ -258,4 +334,6 @@ class DataHandler(context: Context) {
             }
         }
     }
+
+
 }

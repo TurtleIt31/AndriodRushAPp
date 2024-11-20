@@ -1,129 +1,96 @@
 package com.example.rushapp
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import com.example.rushapp.ui.theme.RushAppTheme
 
 class NewUserActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register_account) // Load the register account layout
-        val dataHandler = DataHandler(this)
-        dataHandler.populateSampleData()
 
+        val dataHandler = DataHandler(this) // Initialize DataHandler
+
+        // Back button logic
         val backButton = findViewById<Button>(R.id.registerTextBtn)
         backButton.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
+            navigateToLogin()
+        }
 
-
-            // Start the Register activity when button is clicked
-            val registerButton =
-                findViewById<Button>(R.id.registerTextBtn2) // Use the correct ID for the register button
-            registerButton.setOnClickListener {
-                val usernameField = findViewById<EditText>(R.id.emailEdt)
-                val passwordField = findViewById<EditText>(R.id.passwordEdt)
-                val nameField = findViewById<EditText>(R.id.nameEdt)
-                val phoneField = findViewById<EditText>(R.id.phoneEdt)
-                val userTypeField =
-                    findViewById<EditText>(R.id.userTypeEdt) // This can be a dropdown select later
-
-                val email = usernameField.text.toString().trim()
-                val password = passwordField.text.toString().trim()
-                val name = nameField.text.toString().trim()
-                val phone = phoneField.text.toString().trim()
-                val userType = userTypeField.text.toString().trim()
-
-                // Basic input validation
-                if (email.isEmpty() || password.isEmpty() || name.isEmpty() || phone.isEmpty() || userType.isEmpty()) {
-                    Toast.makeText(this, "All fields are required.", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    Toast.makeText(this, "Please enter a valid email address.", Toast.LENGTH_SHORT)
-                        .show()
-                    return@setOnClickListener
-                }
-
-                if (password.length < 6) {
-                    Toast.makeText(
-                        this,
-                        "Password must be at least 6 characters long.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
-                }
-
-                val dbHelper = DatabaseHelper(this)
-                val db = dbHelper.writableDatabase // Use writable database for insertion
-
-                try {
-                    // Check if the user already exists by querying the email
-                    val cursor = db.query(
-                        "Users", // Ensure this matches your actual table name
-                        arrayOf("userType"),
-                        "email = ?",
-                        arrayOf(email),
-                        null,
-                        null,
-                        null
-                    )
-
-                    if (cursor.moveToFirst()) {
-                        // User found, indicate a duplicate user
-                        Toast.makeText(
-                            this,
-                            "Duplicate user found. Please reset your password.",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        // User does not exist, insert a new user
-                        val values = ContentValues().apply {
-                            put("name", name)
-                            put("email", email)
-                            put("passwordEntry", password)
-                            put("phone", phone)
-                            put("userType", userType)
-
-                            putNull("mechanicId")
-                        }
-
-                        val newRowId = db.insert("Users", null, values)
-                        if (newRowId != -1L) {
-                            // Successful insertion
-                            Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT)
-                                .show()
-
-                            // Navigate to LoginActivity
-                            val intent = Intent(this, LoginActivity::class.java)
-                            startActivity(intent)
-                            finish() // Prevents the user from returning to this screen
-                        } else {
-                            // Insertion failed
-                            Toast.makeText(
-                                this,
-                                "Registration failed. Please try again.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-
-                    cursor.close()
-                } catch (e: Exception) {
-                    Toast.makeText(this, "An error occurred: ${e.message}", Toast.LENGTH_LONG)
-                        .show()
-                } finally {
-                    db.close()
-                }
-            }
+        // Register button logic
+        val registerButton = findViewById<Button>(R.id.registerTextBtn2)
+        registerButton.setOnClickListener {
+            handleRegistration(dataHandler)
         }
     }
 
+    private fun navigateToLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish() // Prevents returning to this screen
+    }
+
+    private fun handleRegistration(dataHandler: DataHandler) {
+        val usernameField = findViewById<EditText>(R.id.emailEdt)
+        val passwordField = findViewById<EditText>(R.id.passwordEdt)
+        val nameField = findViewById<EditText>(R.id.nameEdt)
+        val phoneField = findViewById<EditText>(R.id.phoneEdt)
+        val userTypeField = findViewById<EditText>(R.id.userTypeEdt)
+
+        val email = usernameField.text.toString().trim()
+        val password = passwordField.text.toString().trim()
+        val name = nameField.text.toString().trim()
+        val phone = phoneField.text.toString().trim()
+        val userType = userTypeField.text.toString().trim()
+
+        // Validate user input
+        if (!validateInput(email, password, name, phone, userType)) return
+
+        try {
+            // Check if email already exists
+            val emailExists = dataHandler.doesUserExist(email)
+            if (emailExists) {
+                showToast("A user with this email already exists. Please use another email.")
+                return
+            }
+
+            // Attempt to register the new user
+            val isInserted = dataHandler.insertNewUser(name, email, password, phone, userType)
+            if (isInserted) {
+                showToast("Registration successful!")
+                navigateToLogin() // Navigate to login on success
+            } else {
+                showToast("Registration failed. Please try again.")
+            }
+        } catch (e: Exception) {
+            Log.e("NewUserActivity", "Error during registration: ${e.message}")
+            showToast("An unexpected error occurred. Please try again later.")
+        }
+    }
+
+    private fun validateInput(email: String, password: String, name: String, phone: String, userType: String): Boolean {
+        return when {
+            email.isEmpty() || password.isEmpty() || name.isEmpty() || phone.isEmpty() || userType.isEmpty() -> {
+                showToast("All fields are required.")
+                false
+            }
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                showToast("Please enter a valid email address.")
+                false
+            }
+            password.length < 6 -> {
+                showToast("Password must be at least 6 characters long.")
+                false
+            }
+            else -> true
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
 }
