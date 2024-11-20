@@ -11,7 +11,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "RushApp.db"
-        private const val DATABASE_VERSION = 4
+        private const val DATABASE_VERSION = 7
 
         // Workshops table
         private const val TABLE_WORKSHOPS = "Workshops"
@@ -55,21 +55,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_VEHICLE_YEAR = "year"
         private const val COLUMN_VEHICLE_VIN = "vin"
 
-        // Notifications table
-        private const val TABLE_NOTIFICATIONS = "Notifications"
-        private const val COLUMN_NOTIFICATION_ID = "notificationId"
-        private const val COLUMN_NOTIFICATION_USER_ID = "userId"
-        private const val COLUMN_NOTIFICATION_DATE = "date"
-        private const val COLUMN_NOTIFICATION_MESSAGE = "message"
-
-        // Ratings table
-        private const val TABLE_RATINGS = "Ratings"
-        private const val COLUMN_RATING_ID = "ratingId"
-        private const val COLUMN_RATING_USER_ID = "userId"
-        private const val COLUMN_RATING_MECHANIC_ID = "mechanicId"
-        private const val COLUMN_RATING_VALUE = "rating"
-        private const val COLUMN_RATING_REVIEW = "review"
-        private const val COLUMN_RATING_DATE = "date"
 
         // Services table
         private const val TABLE_SERVICES = "Services"
@@ -167,31 +152,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         )
     """)
 
-        // Create Notifications Table
-        db.execSQL("""
-        CREATE TABLE $TABLE_NOTIFICATIONS (
-            $COLUMN_NOTIFICATION_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            $COLUMN_NOTIFICATION_USER_ID INTEGER,
-            $COLUMN_NOTIFICATION_DATE DATE,
-            $COLUMN_NOTIFICATION_MESSAGE TEXT,
-            FOREIGN KEY ($COLUMN_NOTIFICATION_USER_ID) REFERENCES $TABLE_USERS($COLUMN_USER_ID)
-        )
-    """)
-
-        // Create Ratings Table
-        db.execSQL("""
-        CREATE TABLE $TABLE_RATINGS (
-            $COLUMN_RATING_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            $COLUMN_RATING_USER_ID INTEGER,
-            $COLUMN_RATING_MECHANIC_ID INTEGER,
-            $COLUMN_RATING_VALUE INTEGER CHECK ($COLUMN_RATING_VALUE >= 1 AND $COLUMN_RATING_VALUE <= 5),
-            $COLUMN_RATING_REVIEW TEXT,
-            $COLUMN_RATING_DATE DATE,
-            FOREIGN KEY ($COLUMN_RATING_USER_ID) REFERENCES $TABLE_USERS($COLUMN_USER_ID),
-            FOREIGN KEY ($COLUMN_RATING_MECHANIC_ID) REFERENCES $TABLE_MECHANICS($COLUMN_MECHANIC_ID)
-        )
-    """)
-
         // Create Services Table
         db.execSQL("""
         CREATE TABLE $TABLE_SERVICES (
@@ -250,8 +210,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.execSQL("DROP TABLE IF EXISTS $TABLE_INVOICE_ITEMS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_INVOICES")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_SERVICES")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_RATINGS")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_NOTIFICATIONS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_VEHICLES")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_USERS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_CUSTOMERS")
@@ -499,15 +457,50 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     // --- Bookings Table ---
 
-    fun insertBooking(
-
+    private fun isBookingPresent(
+        db: SQLiteDatabase,
+        serviceId: Long,
+        mechanicId: Long,
+        vehicleId: Long,
+        customerId: Long,
         bookingDate: String
+    ): Boolean {
+        val cursor = db.query(
+            "Bookings",
+            arrayOf("bookingId"),
+            "serviceId = ? AND mechanicId = ? AND vehicleId = ? AND customerId = ? AND bookingDate = ?",
+            arrayOf(serviceId.toString(), mechanicId.toString(), vehicleId.toString(), customerId.toString(), bookingDate),
+            null,
+            null,
+            null
+        )
+        return cursor.use { it.moveToFirst() } // Returns true if at least one row matches the criteria
+    }
+
+    fun insertBooking(
+        db: SQLiteDatabase,
+        serviceId: Long,
+        mechanicId: Long,
+        vehicleId: Long,
+        customerId: Long,
+        bookingDate: String,
+        status: String = "Not Complete"
     ): String {
-        val db = writableDatabase
-        val values = ContentValues().apply {
-            put("bookingDate", bookingDate)
-            put("status", "Not Complete")
+        // Check if booking already exists
+        if (isBookingPresent(db, serviceId, mechanicId, vehicleId, customerId, bookingDate)) {
+            return "Booking already exists."
         }
+
+        // Insert booking if it doesn't exist
+        val values = ContentValues().apply {
+            put("serviceId", serviceId)
+            put("mechanicId", mechanicId)
+            put("vehicleId", vehicleId)
+            put("customerId", customerId)
+            put("bookingDate", bookingDate)
+            put("status", status)
+        }
+
         val result = db.insert("Bookings", null, values)
         return if (result != -1L) {
             "Booking successfully created."
@@ -533,6 +526,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
 
+
+
     fun updateBooking(db: SQLiteDatabase, bookingId: Long, serviceId: Long, mechanicId: Long, vehicleId: Long, customerId: Long, bookingDate: String, bookingStatus: String): Int {
         val values = ContentValues().apply {
             put("serviceId", serviceId)
@@ -548,6 +543,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun deleteBooking(db: SQLiteDatabase, bookingId: Long): Int {
         return db.delete("Bookings", "bookingId = ?", arrayOf(bookingId.toString()))
     }
+
+
 
 
 

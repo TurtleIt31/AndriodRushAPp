@@ -17,6 +17,10 @@ import com.example.rushapp.ui.theme.RushAppTheme
 class EditUserActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_edituser)
+        val users = fetchUsersFromDatabase()
+        // You can log the fetched users or use them as needed
+        println("Fetched users: $users")
 
     }
     private fun fetchUsersFromDatabase(): List<User> {
@@ -34,6 +38,11 @@ class EditUserActivity : ComponentActivity() {
             null  // No order by
         )
 
+        if (cursor.count == 0) {
+            // Log if no records found
+            println("No users found in the database.")
+        }
+
         while (cursor.moveToNext()) {
             val name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
             val email = cursor.getString(cursor.getColumnIndexOrThrow("email"))
@@ -41,12 +50,11 @@ class EditUserActivity : ComponentActivity() {
             val userType = cursor.getString(cursor.getColumnIndexOrThrow("userType"))
             val password = cursor.getString(cursor.getColumnIndexOrThrow("passwordEntry"))
 
-            // Create a User object with only the relevant data
             userList.add(
                 User(
-                    userId = null, // Unused/immutable field
-                    mechanicId = null, // Unused/immutable field
-                    customerId = null, // Unused/immutable field
+                    userId = null, // Adjust these fields as necessary
+                    mechanicId = null,
+                    customerId = null,
                     name = name,
                     userType = userType,
                     email = email,
@@ -60,6 +68,8 @@ class EditUserActivity : ComponentActivity() {
         db.close()
         return userList
     }
+
+
 
 }
 

@@ -60,8 +60,22 @@ class BookingsActivity : ComponentActivity() {
                 return
             }
 
-            // Insert the booking with only the date
-            val resultMessage = db.insertBooking(selectedDate!!)
+            // Example: Fetch required IDs from the database
+            val serviceId = 1L // Replace with logic to get serviceId
+            val mechanicId = 1L // Replace with logic to get mechanicId
+            val vehicleId = 1L // Replace with logic to get vehicleId
+            val customerId = 1L // Replace with logic to get customerId
+
+            // Insert the booking
+            val resultMessage = db.insertBooking(
+                db.writableDatabase,
+                serviceId,
+                mechanicId,
+                vehicleId,
+                customerId,
+                selectedDate!!,
+                "Scheduled"
+            )
             Toast.makeText(this, resultMessage, Toast.LENGTH_SHORT).show()
 
             // Refresh the displayed bookings
@@ -72,6 +86,7 @@ class BookingsActivity : ComponentActivity() {
             Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
+
 
     // Function to fetch and display bookings for the logged-in user
     private fun displayUserBookings(db: DatabaseHelper) {

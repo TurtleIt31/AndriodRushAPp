@@ -32,17 +32,70 @@ class DataHandler(context: Context) {
         val vehicleId = getVehicleIdByVin(db, "1HGCM82633A123456")
             ?: dbHelper.insertVehicle(db, userId, "Toyota", "Corolla", 2020, "1HGCM82633A123456")
 
-        // Insert a service if not already present
-        if (!isServicePresent(db, mechanicId, vehicleId, "2024-11-12")) {
-            dbHelper.insertService(db, mechanicId, vehicleId, "2024-11-12", "Oil Change", "Changed engine oil and filter")
-        }
+        // Insert a service if not already present, and retrieve its ID
+        val serviceId = getServiceIdByDetails(db, mechanicId, vehicleId, "2024-11-12")
+            ?: dbHelper.insertService(db, mechanicId, vehicleId, "2024-11-12", "Oil Change", "Changed engine oil and filter")
 
-        // Insert a notification if not already present
-        if (!isNotificationPresent(db, userId, "2024-11-13")) {
-            dbHelper.insertNotification(db, userId, "2024-11-13", "Your next service is due soon.")
+        // Insert a booking if not already present
+        if (!isBookingPresent(db, serviceId, mechanicId, vehicleId, customerId, "2024-11-20")) {
+            val resultMessage = dbHelper.insertBooking(
+                db,
+                serviceId,
+                mechanicId,
+                vehicleId,
+                customerId,
+                "2024-11-20",
+                "Scheduled"
+            )
+            println(resultMessage) // Log or display the result message
         }
 
         db.close()
+    }
+
+    private fun getServiceIdByDetails(
+        db: SQLiteDatabase,
+        mechanicId: Long,
+        vehicleId: Long,
+        date: String
+    ): Long? {
+        val cursor = db.query(
+            "Services",
+            arrayOf("serviceId"),
+            "mechanicId = ? AND vehicleId = ? AND date = ?",
+            arrayOf(mechanicId.toString(), vehicleId.toString(), date),
+            null,
+            null,
+            null
+        )
+        return cursor.use {
+            if (it.moveToFirst()) {
+                it.getLong(it.getColumnIndexOrThrow("serviceId"))
+            } else {
+                null
+            }
+        }
+    }
+
+
+    private fun isBookingPresent(
+        db: SQLiteDatabase,
+        serviceId: Long,
+        mechanicId: Long,
+        vehicleId: Long,
+        customerId: Long,
+        bookingDate: String
+    ): Boolean {
+        val cursor = db.query(
+            "Bookings",
+            arrayOf("bookingId"),
+            "serviceId = ? AND mechanicId = ? AND vehicleId = ? AND customerId = ? AND bookingDate = ?",
+            arrayOf(serviceId.toString(), mechanicId.toString(), vehicleId.toString(), customerId.toString(), bookingDate),
+            null,
+            null,
+            null
+        )
+        return cursor.use { it.moveToFirst() } // Return true if a matching row is found
     }
 
     // Function to get Workshop ID by name
@@ -84,6 +137,8 @@ class DataHandler(context: Context) {
             }
         }
     }
+
+
 
     // Function to get Customer ID by name
     private fun getCustomerIdByName(db: SQLiteDatabase, name: String): Long? {
@@ -159,17 +214,5 @@ class DataHandler(context: Context) {
         return cursor.use { it.moveToFirst() }
     }
 
-    // Function to check if a notification is present
-    private fun isNotificationPresent(db: SQLiteDatabase, userId: Long, date: String): Boolean {
-        val cursor = db.query(
-            "Notifications",
-            arrayOf("notificationId"),
-            "userId = ? AND date = ?",
-            arrayOf(userId.toString(), date),
-            null,
-            null,
-            null
-        )
-        return cursor.use { it.moveToFirst() }
-    }
+
 }

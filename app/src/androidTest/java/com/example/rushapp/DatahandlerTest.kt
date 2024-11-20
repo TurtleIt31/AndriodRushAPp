@@ -21,25 +21,31 @@ class DataHandlerTest {
         context = ApplicationProvider.getApplicationContext()
         dataHandler = DataHandler(context)
         dbHelper = DatabaseHelper(context)
-        dataHandler.populateSampleData()
+        dataHandler.populateSampleData() // Populate sample data
     }
 
+    @After
+    fun tearDown() {
+        dbHelper.close() // Ensure the database is closed after the tests
+    }
 
     @Test
     fun testDataInsertion() {
         val db = dbHelper.readableDatabase
         val cursor = db.query("Users", null, null, null, null, null, null)
 
-        // Check if data is present in the Users table
         if (cursor.count > 0) {
-            cursor.moveToFirst() // Move to the first row
+            cursor.moveToFirst()
 
-            // Print out column names
             val columnNames = cursor.columnNames
             println("Column Names in Users Table: ${columnNames.joinToString()}")
 
-            // Iterate through all rows and print column values
             do {
+                val userIdIndex = cursor.getColumnIndex("userId")
+                val userId = cursor.getLong(userIdIndex)
+
+                assertTrue("userId should not be null or 0", userId != 0L)
+
                 val rowValues = columnNames.map { columnName ->
                     "$columnName: ${cursor.getString(cursor.getColumnIndexOrThrow(columnName))}"
                 }
@@ -52,4 +58,42 @@ class DataHandlerTest {
         cursor.close()
         db.close()
     }
+
+    @Test
+    fun testBookingExists() {
+        val db = dbHelper.readableDatabase
+        val cursor = db.query("Bookings", null, null, null, null, null, null)
+
+        // Check if there are rows in the Bookings table
+        assertTrue("No data found in the Bookings table", cursor.count > 0)
+
+        println("Number of rows in Bookings table: ${cursor.count}")
+
+        if (cursor.count > 0) {
+            cursor.moveToFirst()
+
+            val columnNames = cursor.columnNames
+            println("Column Names in Bookings Table: ${columnNames.joinToString()}")
+
+            println("Data in Bookings Table:")
+            do {
+                val bookingIdIndex = cursor.getColumnIndex("bookingId")
+                val bookingId = cursor.getLong(bookingIdIndex)
+
+                // Assert that bookingId is valid
+                assertTrue("bookingId should not be null or 0", bookingId != 0L)
+
+                val rowValues = columnNames.map { columnName ->
+                    "$columnName: ${cursor.getString(cursor.getColumnIndexOrThrow(columnName))}"
+                }
+                println("Row: ${rowValues.joinToString()}")
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+    }
+
+
 }
+
