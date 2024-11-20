@@ -272,12 +272,5 @@ class DataHandlerTest {
         db.close()
     }
 
-
-
-
-
-
-
-
 }
 
