@@ -13,16 +13,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:id="@+id/imageView111"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/disclaimer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="-128dp"
-            android:scaleType="centerCrop"
+            android:layout_marginBottom="16dp"
+            android:gravity="center"
+            android:text="@string/rush_app_logo"
+            android:textColor="#8b8b8b"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/bottom_wave" />
+            app:layout_constraintVertical_bias="0.048" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -169,37 +172,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:id="@+id/imageView11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="-128dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/bottom_wave" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView6"
-                android:layout_width="125dp"
-                android:layout_height="125dp"
-                android:elevation="3dp"
-                android:padding="5dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:shapeAppearanceOverlay="@style/CircleImageView"
-                app:strokeColor="@color/white"
-                app:strokeWidth="5dp"
-                tools:srcCompat="@drawable/profile" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

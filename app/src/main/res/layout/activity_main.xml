@@ -4,35 +4,63 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@color/white"
     tools:context=".MainActivity">
+
+
+    <TextView
+        android:id="@+id/homepageDescription"
+        android:layout_width="386dp"
+        android:layout_height="400dp"
+        android:layout_margin="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="274dp"
+        android:text="Welcome to Rush, your one-stop app for managing vehicle service history and appointments. \n\n\nWith Rush, you can:
+
+    \n\n*    Track your vehicle's service history with ease.
+    \n*   Schedule service appointments with your preferred mechanic.
+    \n*   Receive reminders for upcoming appointments.
+    \n*   View and manage invoices for completed services.
+
+    \n\n So what are we waiting for?"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view2" />
 
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="632dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center_horizontal"
         android:text="@string/intro_text"
         android:textColor="@color/black"
         android:textSize="35sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:text="@string/intro_subtitle"
-        android:textColor="#8b8b8b"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <View
+        android:id="@+id/view2"
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="29dp"
+        android:layout_marginEnd="2dp"
+        android:layout_weight="1"
+        android:outlineAmbientShadowColor="@color/red"
+        android:background="#707070"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.048" />
+        tools:layout_gravity="center_vertical" />
 
     <Button
         android:id="@+id/startBtn"
@@ -41,7 +69,8 @@
         android:background="@drawable/red_bg_corner"
         android:gravity="center"
         android:text="Get Started"
-        android:textSize="15sp"
+        android:textColor="@color/white"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
