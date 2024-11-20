@@ -1,25 +1,25 @@
 package com.example.rushapp
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.rushapp.ui.theme.RushAppTheme
+
 
 class InvoicesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
+        setContentView(R.layout.activity_invoices)
 
+        val userType = intent.getStringExtra("userType") ?: ""
+
+        // Find the button in the layout
+        val createInvoiceButton = findViewById<View>(R.id.createInvoiceButton)
+
+        // Set visibility based on userType
+        if (userType == "Mechanic" || userType == "Admin") {
+            createInvoiceButton.visibility = View.VISIBLE
+        } else {
+            createInvoiceButton.visibility = View.GONE
         }
     }
 }
-
