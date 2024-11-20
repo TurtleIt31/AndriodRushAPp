@@ -18,8 +18,19 @@ class BookingsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_appointments) // Set the content view to the XML layout
 
+
+       /* val backButton = findViewById<Button>(R.id.backButton)
+        backButton.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java) // Assuming ProfileActivity is the target
+            startActivity(intent)
+            finish() */
+
         // Initialize the database helper
         val db = DatabaseHelper(this)
+
+
+
+
 
         // Display bookings for the logged-in user
         displayUserBookings(db)
@@ -80,6 +91,8 @@ class BookingsActivity : ComponentActivity() {
 
         val bookingsList = mutableListOf<String>() // List of strings to collect booking details
 
+
+
         if (cursor.moveToFirst()) {
             do {
                 val bookingDate = cursor.getString(cursor.getColumnIndexOrThrow("bookingDate"))
@@ -101,4 +114,6 @@ class BookingsActivity : ComponentActivity() {
     private fun getSignedInEmail(): String {
         return intent.getStringExtra("email") ?: ""
     }
+
+
 }

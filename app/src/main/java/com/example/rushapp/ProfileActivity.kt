@@ -32,28 +32,21 @@ class ProfileActivity : ComponentActivity() {
             startActivity(intent)
         }
         editProfileButton.setOnClickListener {
-            val intent = Intent(this, BookingsActivity::class.java)
+            val intent = Intent(this, EditUserActivity::class.java)
             startActivity(intent)
         }
         vehiclesButton.setOnClickListener {
-            val intent = Intent(this, BookingsActivity::class.java)
+            val intent = Intent(this, VehicleActivity::class.java)
             startActivity(intent)
         }
         invoicesButton.setOnClickListener {
-            val intent = Intent(this, BookingsActivity::class.java)
+            val intent = Intent(this, InvoicesActivity::class.java)
             startActivity(intent)
         }
         mechanicsButton.setOnClickListener {
             val intent = Intent(this, BookingsActivity::class.java)
             startActivity(intent)
         }
-
-
-
-
-
-
-
 
 
 
