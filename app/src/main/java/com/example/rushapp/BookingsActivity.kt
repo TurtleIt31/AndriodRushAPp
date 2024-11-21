@@ -1,6 +1,7 @@
 package com.example.rushapp
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -17,15 +18,29 @@ class BookingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_appointments) // Set the content view to the XML layout
+        val backButton = findViewById<Button>(R.id.backButton)
 
-
-       /* val backButton = findViewById<Button>(R.id.backButton)
         backButton.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java) // Assuming ProfileActivity is the target
+            val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
-            finish() */
+        }
 
-        // Initialize the database helper
+
+/*   // Back button logic
+        val backButton = findViewById<Button>(R.id.backButtonAppointments)
+        backButton.setOnClickListener {
+            navigateToProfile()
+        }
+    }
+
+    private fun navigateToProfile() {
+        val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
+        finish() // Prevents returning to this screen
+    } */
+
+
+    // Initialize the database helper
         val db = DatabaseHelper(this)
 
         // Display bookings for the logged-in user
@@ -125,6 +140,7 @@ class BookingsActivity : ComponentActivity() {
         Log.d("BookingsActivity", "Signed-in email: $email") // Log the email for debugging
         return email
     }
+
 
 
 }
