@@ -24,19 +24,19 @@ class ProfileActivity : ComponentActivity() {
         }
         editProfileButton.setOnClickListener {
             val intent = Intent(this, EditUserActivity::class.java)
-            intent.putExtra("email", email) // Pass the email to BookingsActivity
+            intent.putExtra("email", email) // Pass the email to EditUserActivity
             startActivity(intent)
         }
         vehiclesButton.setOnClickListener {
             val intent = Intent(this, VehicleActivity::class.java)
             intent.putExtra("userType", userType)
-            intent.putExtra("email", email) // Pass the email to BookingsActivity
+            intent.putExtra("email", email) // Pass the email to VehicleActivity
             startActivity(intent)
         }
         invoicesButton.setOnClickListener {
             val intent = Intent(this, InvoicesActivity::class.java)
             intent.putExtra("userType", userType)
-            intent.putExtra("email", email) // Pass the email to BookingsActivity
+            intent.putExtra("email", email) // Pass the email to InvoicesActivity
             startActivity(intent)
         }
         mechanicsButton.setOnClickListener {
