@@ -24,16 +24,18 @@ class NewUserActivity : ComponentActivity() {
 
         val dataHandler = DataHandler(this) // Initialize DataHandler
 
-        // Back button logic
-        val backButton = findViewById<Button>(R.id.registerTextBtn)
-        backButton.setOnClickListener {
-            navigateToLogin()
-        }
 
         // Register button logic
         val registerButton = findViewById<Button>(R.id.registerTextBtn2)
         registerButton.setOnClickListener {
             handleRegistration(dataHandler, userTypeSpinner)
+        }
+
+        val backButton = findViewById<Button>(R.id.backButton)
+        backButton.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+            finish() // Optional: Finish the current activity
         }
     }
 
