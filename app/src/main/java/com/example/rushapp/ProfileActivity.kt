@@ -40,8 +40,10 @@ class ProfileActivity : ComponentActivity() {
             startActivity(intent)
         }
         mechanicsButton.setOnClickListener {
-            val intent = Intent(this, BookingsActivity::class.java)
-            intent.putExtra("email", email) // Pass the email to BookingsActivity
+            val intent = Intent(this, MechanicsActivity::class.java)
+            intent.putExtra("email", email)
+            intent.putExtra("userType", userType)// Pass the email to BookingsActivity
+            
             startActivity(intent)
         }
 
