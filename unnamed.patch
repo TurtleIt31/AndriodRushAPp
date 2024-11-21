@@ -1,0 +1,55 @@
+Index: app/src/main/java/Data/Models/WorkshopDAO.kt
+===================================================================
+diff --git a/app/src/main/java/Data/Models/WorkshopDAO.kt b/app/src/main/java/Data/Models/WorkshopDAO.kt
+deleted file mode 100644
+--- a/app/src/main/java/Data/Models/WorkshopDAO.kt	
++++ /dev/null	
+@@ -1,4 +0,0 @@
+-package Data.Models
+-
+-class WorkshopDAO {
+-}
+\ No newline at end of file
+Index: app/src/main/java/Data/Models/UserDAO.kt
+===================================================================
+diff --git a/app/src/main/java/Data/Models/UserDAO.kt b/app/src/main/java/Data/Models/UserDAO.kt
+deleted file mode 100644
+--- a/app/src/main/java/Data/Models/UserDAO.kt	
++++ /dev/null	
+@@ -1,12 +0,0 @@
+-package com.example.rushapp.data.model
+-
+-data class User(
+-    val userId: Long? = null, // Immutable, can be left null or use default value
+-    val mechanicId: Long? = null, // Immutable
+-    val customerId: Long? = null, // Immutable
+-    var name: String, // Mutable
+-    var userType: String, // Mutable if necessary
+-    var email: String = "", // Mutable
+-    var phone: String = "", // Mutable
+-    var password: String = "" // Mutable
+-)
+Index: app/src/main/java/Data/Models/InvoiceDAO.kt
+===================================================================
+diff --git a/app/src/main/java/Data/Models/InvoiceDAO.kt b/app/src/main/java/Data/Models/InvoiceDAO.kt
+deleted file mode 100644
+--- a/app/src/main/java/Data/Models/InvoiceDAO.kt	
++++ /dev/null	
+@@ -1,4 +0,0 @@
+-package Data.Models
+-
+-class InvoiceDAO {
+-}
+\ No newline at end of file
+Index: app/src/main/java/Data/Models/CustomerDAO.kt
+===================================================================
+diff --git a/app/src/main/java/Data/Models/CustomerDAO.kt b/app/src/main/java/Data/Models/CustomerDAO.kt
+deleted file mode 100644
+--- a/app/src/main/java/Data/Models/CustomerDAO.kt	
++++ /dev/null	
+@@ -1,4 +0,0 @@
+-package Data.Models
+-
+-class CustomerDAO {
+-}
+\ No newline at end of file
