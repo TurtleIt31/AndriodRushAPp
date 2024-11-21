@@ -11,6 +11,7 @@ class InvoicesActivity : ComponentActivity() {
         setContentView(R.layout.activity_invoices)
 
         val userType = intent.getStringExtra("userType") ?: ""
+        val email = intent.getStringExtra("email")?: ""
 
         // Find the button in the layout
         val createInvoiceButton = findViewById<View>(R.id.createInvoiceButton)

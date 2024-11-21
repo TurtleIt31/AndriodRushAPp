@@ -129,6 +129,8 @@ class DataHandler(context: Context) {
     }
 
 
+
+
     // **Invoice Functions**
     fun insertInvoiceWithItems(
         db: SQLiteDatabase,
@@ -165,6 +167,40 @@ class DataHandler(context: Context) {
         return invoiceId
     }
 
+    fun getInvoicesByEmail(db: SQLiteDatabase, email: String): List<Map<String, Any>> {
+        val query = """
+        SELECT i.invoiceId, i.totalCost, s.serviceId, s.description, s.date, v.make, v.model, v.year 
+        FROM Invoices i
+        INNER JOIN Services s ON i.serviceId = s.serviceId
+        INNER JOIN Vehicles v ON s.vehicleId = v.vehicleId
+        INNER JOIN Users u ON s.mechanicId = u.mechanicId
+        WHERE u.email = ?
+    """
+        val cursor = db.rawQuery(query, arrayOf(email))
+        return cursor.use { it.toListOfMaps() }
+    }
+
+    // Extension function to map Cursor rows to a list of maps
+    private fun Cursor.toListOfMaps(): List<Map<String, Any>> {
+        val list = mutableListOf<Map<String, Any>>()
+        while (moveToNext()) {
+            val row = (0 until columnCount).associate { columnIndex ->
+                getColumnName(columnIndex) to when (getType(columnIndex)) {
+                    Cursor.FIELD_TYPE_INTEGER -> getLong(columnIndex)
+                    Cursor.FIELD_TYPE_FLOAT -> getDouble(columnIndex)
+                    Cursor.FIELD_TYPE_STRING -> getString(columnIndex) ?: ""
+                    else -> "" // Default value for null or unsupported fields
+                }
+            }
+            list.add(row)
+        }
+        return list
+    }
+
+
+
+
+
     // **Check if User Exists**
     fun doesUserExist(email: String): Boolean {
         val db = dbHelper.readableDatabase // Open database for reading
@@ -179,6 +215,8 @@ class DataHandler(context: Context) {
         )
         return cursor.use { it.moveToFirst() } // True if a record exists
     }
+
+
 
     fun getInvoiceIdByServiceId(db: SQLiteDatabase, serviceId: Long): Long? {
         val cursor = db.query(

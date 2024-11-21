@@ -98,4 +98,93 @@ class DatahandlerTest2 {
         assertNotNull(retrievedInvoiceId)
         assertEquals(invoiceId, retrievedInvoiceId)
     }
+
+    @Test
+    fun testInsertNewUserRetrievesOrCreatesCustomerId() {
+        val name = "John Doe"
+        val email = "johndoe@example.com"
+        val password = "password123"
+        val phone = "123-456-7890"
+        val userType = "Customer"
+
+        // Ensure the Customers table is empty
+        db.execSQL("DELETE FROM Customers")
+
+        // Insert a new user
+        val isUserInserted = dataHandler.insertNewUser(name, email, password, phone, userType)
+
+        // Verify that the user was inserted
+        assertEquals(true, isUserInserted)
+
+        // Check if the user is associated with the correct customerId
+        val cursor = db.query(
+            "Users",
+            arrayOf("customerId"),
+            "email = ?",
+            arrayOf(email),
+            null,
+            null,
+            null
+        )
+
+        assertEquals(true, cursor.moveToFirst())
+        val customerId = cursor.getLong(cursor.getColumnIndexOrThrow("customerId"))
+        assertNotNull(customerId)
+
+        // Verify that the customer exists in the Customers table
+        val customerCursor = db.query(
+            "Customers",
+            arrayOf("customerId", "name"),
+            "customerId = ?",
+            arrayOf(customerId.toString()),
+            null,
+            null,
+            null
+        )
+        assertEquals(true, customerCursor.moveToFirst())
+        assertEquals(name, customerCursor.getString(customerCursor.getColumnIndexOrThrow("name")))
+
+        // Clean up
+        customerCursor.close()
+        cursor.close()
+    }
+
+    @Test
+    fun testGetInvoicesByEmail() {
+        // Use an existing email that already has invoices in the database
+        val email = "alice@example.com"
+
+        // Retrieve invoices by email
+        val invoices = dataHandler.getInvoicesByEmail(db, email)
+
+        // Verify that invoices are retrieved
+        assertNotNull(invoices)
+        assert(invoices.isNotEmpty()) { "No invoices found for the provided email: $email" }
+
+        // Example: Verify the details of the first invoice
+        val firstInvoice = invoices[0]
+
+        // Check for expected keys in the result
+        assert(firstInvoice.containsKey("invoiceId")) { "Missing invoiceId in the result" }
+        assert(firstInvoice.containsKey("totalCost")) { "Missing totalCost in the result" }
+        assert(firstInvoice.containsKey("serviceId")) { "Missing serviceId in the result" }
+        assert(firstInvoice.containsKey("description")) { "Missing description in the result" }
+        assert(firstInvoice.containsKey("date")) { "Missing date in the result" }
+        assert(firstInvoice.containsKey("make")) { "Missing make in the result" }
+        assert(firstInvoice.containsKey("model")) { "Missing model in the result" }
+        assert(firstInvoice.containsKey("year")) { "Missing year in the result" }
+
+        // Example: Log the results (optional)
+        invoices.forEachIndexed { index, invoice ->
+            println("Invoice $index: $invoice")
+        }
+
+        // Optionally, verify specific values if you know the existing data
+        // Example: Check that the totalCost of the first invoice matches an expected value
+        //val expectedTotalCost = 300.00 // Replace with the actual expected value
+        //assertEquals(expectedTotalCost, firstInvoice["totalCost"])
+    }
+
+
+
 }
