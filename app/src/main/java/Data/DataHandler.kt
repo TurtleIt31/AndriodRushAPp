@@ -8,7 +8,7 @@ import android.util.Log
 
 class DataHandler(context: Context) {
 
-    private val dbHelper = DatabaseHelper(context)
+    val dbHelper = DatabaseHelper(context)
 
     // **Populate Sample Data**
     fun populateSampleData() {
@@ -315,6 +315,29 @@ class DataHandler(context: Context) {
             }
         }
     }
+
+    fun getAllMechanics(db: SQLiteDatabase): List<Mechanic> {
+        val mechanics = mutableListOf<Mechanic>()
+        val cursor = db.query(
+            "Mechanics",
+            arrayOf("name", "email"),
+            null, // No WHERE clause to get all mechanics
+            null,
+            null,
+            null,
+            null
+        )
+
+        cursor.use {
+            while (it.moveToNext()) {
+                val name = it.getString(it.getColumnIndexOrThrow("name"))
+                val email = it.getString(it.getColumnIndexOrThrow("email"))
+                mechanics.add(Mechanic(name, email))
+            }
+        }
+        return mechanics
+    }
+
 
     private fun getCustomerIdByName(db: SQLiteDatabase, name: String): Long? {
         val cursor = db.query(

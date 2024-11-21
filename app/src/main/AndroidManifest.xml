@@ -13,6 +13,11 @@
         android:theme="@style/Theme.RushApp"
         tools:targetApi="31">
         <activity
+            android:name=".MechanicsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_mechanics"
+            android:theme="@style/Theme.RushApp" />
+        <activity
             android:name=".VehicleActivity"
             android:exported="false"
             android:label="@string/title_activity_vehicle"
