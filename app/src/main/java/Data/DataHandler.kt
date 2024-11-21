@@ -1,10 +1,12 @@
 package com.example.rushapp
 
+import Data.Models.Appointment
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import com.example.rushapp.models.ServiceItem
 
 class DataHandler(context: Context) {
 
@@ -32,11 +34,14 @@ class DataHandler(context: Context) {
 
         // Insert or fetch Vehicle
         val vehicleId = getVehicleIdByVin(db, "1HGCM82633A123456")
-            ?: dbHelper.insertVehicle(db, userId, "Toyota", "Corolla", 2020, "1HGCM82633A123456")
+            ?: dbHelper.insertVehicle(db, userId, "Toyota", "Corolla", "2020", "1HGCM82633A123456")
 
         // Insert or fetch Service
         val serviceId = getServiceIdByDetails(db, mechanicId, vehicleId, "2024-11-12")
             ?: dbHelper.insertService(db, mechanicId, vehicleId, "2024-11-12", "Oil Change", "Changed engine oil and filter")
+
+
+
 
         // Insert or fetch Invoice
         val invoiceId = getInvoiceIdByServiceId(db, serviceId)
@@ -49,7 +54,7 @@ class DataHandler(context: Context) {
                     "Brake Repair" to 150.75,
                     "Tire Replacement" to 50.00
                 )
-            )
+            )//ends here
 
         // Insert Booking if not already present
         if (!isBookingPresent(db, serviceId, mechanicId, vehicleId, customerId, "2024-11-20")) {
@@ -68,6 +73,80 @@ class DataHandler(context: Context) {
         db.close()
     }
 
+    fun insertNewMechanic(
+        name: String,
+        email: String,
+        password: String,
+        phone: String,
+        workshopId: Long? // Nullable workshop ID
+    ): Boolean {
+        val db = dbHelper.writableDatabase // Open the database once
+        return try {
+            db.beginTransaction() // Start a transaction
+
+            // Check if the email already exists
+            if (doesUserExist(email)) {
+                Log.e("DataHandler", "Mechanic with email $email already exists.")
+                return false
+            }
+
+            // Register the mechanic as a customer first
+            val customerId = insertCustomer(name, db) // Use the same db instance
+            if (customerId == -1L) {
+                Log.e("DataHandler", "Failed to register as customer for mechanic $name")
+                return false
+            }
+
+            // Insert into the Users table
+            val userValues = ContentValues().apply {
+                put("name", name)
+                put("email", email)
+                put("passwordEntry", password) // Store plain-text password
+                put("phone", phone)
+                put("userType", "mechanic") // Define user type as mechanic
+                put("customerId", customerId) // Associate mechanic with the customerId
+            }
+
+            val userId = db.insert("Users", null, userValues)
+            if (userId == -1L) {
+                Log.e("DataHandler", "Failed to insert into Users table for mechanic $name")
+                return false
+            }
+
+            // Insert into the Mechanics table
+            val mechanicValues = ContentValues().apply {
+                put("name", name)
+                put("email", email)
+                put("phone", phone)
+                if (workshopId != null) put("workshop_id", workshopId) // Optional workshop ID
+                put("user_type", "mechanic") // Mechanic type in Mechanics table
+            }
+
+            val mechanicId = db.insert("mechanics", null, mechanicValues)
+            if (mechanicId == -1L) {
+                Log.e("DataHandler", "Failed to insert into Mechanics table for mechanic $name")
+                return false
+            }
+
+            db.setTransactionSuccessful() // Commit transaction if all succeeded
+            true
+        } catch (e: Exception) {
+            Log.e("DataHandler", "Error inserting new mechanic: ${e.message}")
+            false
+        } finally {
+            db.endTransaction() // End transaction
+            db.close() // Close the database
+        }
+    }
+
+
+
+
+
+
+
+
+
     fun insertNewUser(
         name: String,
         email: String,
@@ -75,7 +154,7 @@ class DataHandler(context: Context) {
         phone: String,
         userType: String,
         mechanicId: Long? = null
-    ): Boolean {
+        ): Boolean {
         val db = dbHelper.writableDatabase // Open the database once
         return try {
             // Check if the email already exists
@@ -375,6 +454,145 @@ class DataHandler(context: Context) {
                 null
             }
         }
+    }
+
+    fun getOrInsertVehicle(db: SQLiteDatabase, vin: String, customerId: Long): Long {
+        val vehicleId = getVehicleIdByVin(db, vin)
+        return vehicleId ?: dbHelper.insertVehicle(db, customerId, vin, "Toyota", "2021", "20201543")
+    }
+
+    fun getServicesByVehicleId(db: SQLiteDatabase, vehicleId: Long): List<ServiceItem> {
+        val services = mutableListOf<ServiceItem>()
+        val cursor = db.query(
+            "Services",
+            arrayOf(
+                "serviceId",
+                "mechanicId",
+                "vehicleId",
+                "date",
+                "serviceType",
+                "description"
+            ),
+            "vehicleId = ?",
+            arrayOf(vehicleId.toString()),
+            null,
+            null,
+            "date ASC" // Order by date
+        )
+        cursor.use {
+            while (it.moveToNext()) {
+                services.add(
+                    ServiceItem(
+                        serviceId = it.getLong(it.getColumnIndexOrThrow("serviceId")),
+                        mechanicId = it.getLong(it.getColumnIndexOrThrow("mechanicId")),
+                        vehicleId = it.getLong(it.getColumnIndexOrThrow("vehicleId")),
+                        date = it.getString(it.getColumnIndexOrThrow("date")),
+                        serviceType = it.getString(it.getColumnIndexOrThrow("serviceType")),
+                        serviceDescription = it.getString(it.getColumnIndexOrThrow("description"))
+                    )
+                )
+            }
+        }
+        return services
+    }
+
+    fun getAllServices(db: SQLiteDatabase): List<ServiceItem> {
+        val services = mutableListOf<ServiceItem>()
+        val cursor = db.query(
+            "Services",
+            arrayOf(
+                "serviceId",
+                "mechanicId",
+                "vehicleId",
+                "date",
+                "serviceType",
+                "description"
+            ),
+            null, // No WHERE clause since we want all rows
+            null, // No WHERE arguments
+            null, // No GROUP BY
+            null, // No HAVING
+            "date ASC" // Order by date
+        )
+        cursor.use {
+            while (it.moveToNext()) {
+                services.add(
+                    ServiceItem(
+                        serviceId = it.getLong(it.getColumnIndexOrThrow("serviceId")),
+                        mechanicId = it.getLong(it.getColumnIndexOrThrow("mechanicId")),
+                        vehicleId = it.getLong(it.getColumnIndexOrThrow("vehicleId")),
+                        date = it.getString(it.getColumnIndexOrThrow("date")),
+                        serviceType = it.getString(it.getColumnIndexOrThrow("serviceType")),
+                        serviceDescription = it.getString(it.getColumnIndexOrThrow("description"))
+                    )
+                )
+            }
+        }
+        return services
+    }
+
+
+    fun insertService(
+        db: SQLiteDatabase,
+        mechanicId: Long,
+        vehicleId: Long,
+        date: String,
+        serviceType: String,
+        serviceDescription: String
+    ): Boolean {
+        return try {
+            val values = ContentValues().apply {
+                put("mechanicId", mechanicId)
+                put("vehicleId", vehicleId)
+                put("date", date)
+                put("serviceType", serviceType)
+                put("description", serviceDescription) // Ensure this is included
+            }
+            val newRowId = db.insert("Services", null, values)
+            newRowId != -1L // Return true if insertion was successful
+        } catch (e: Exception) {
+            Log.e("DataHandler", "Error inserting service: ${e.message}")
+            false
+        }
+    }
+
+
+
+    fun getAppointmentsByVehicleId(db: SQLiteDatabase, vehicleId: Long): List<Appointment> {
+        val appointments = mutableListOf<Appointment>()
+        val cursor = db.query(
+            "Bookings",
+            arrayOf(
+                "bookingId",
+                "serviceId",
+                "mechanicId",
+                "vehicleId",
+                "customerId",
+                "bookingDate",
+                "bookingStatus"
+            ),
+            "vehicleId = ?",
+            arrayOf(vehicleId.toString()),
+            null,
+            null,
+            "bookingDate ASC" // Order by date
+        )
+        cursor.use {
+            while (it.moveToNext()) {
+                appointments.add(
+                    Appointment(
+                        bookingId = it.getLong(it.getColumnIndexOrThrow("bookingId")),
+                        serviceId = it.getLong(it.getColumnIndexOrThrow("serviceId")),
+                        mechanicId = it.getLong(it.getColumnIndexOrThrow("mechanicId")),
+                        vehicleId = it.getLong(it.getColumnIndexOrThrow("vehicleId")),
+                        customerId = it.getLong(it.getColumnIndexOrThrow("customerId")),
+                        bookingDate = it.getString(it.getColumnIndexOrThrow("bookingDate")),
+                        bookingStatus = it.getString(it.getColumnIndexOrThrow("bookingStatus"))
+                    )
+                )
+            }
+        }
+        return appointments
     }
 
     private fun getVehicleIdByVin(db: SQLiteDatabase, vin: String): Long? {

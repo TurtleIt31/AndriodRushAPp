@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Mechanic Name -->
+    <EditText
+        android:id="@+id/mechanicNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mechanic Name"
+        android:inputType="textPersonName"
+        android:minHeight="48dp" />
+
+    <!-- Mechanic Email -->
+    <EditText
+        android:id="@+id/mechanicEmailField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mechanic Email"
+        android:inputType="textEmailAddress"
+        android:minHeight="48dp" />
+
+    <!-- Mechanic Phone -->
+    <EditText
+        android:id="@+id/mechanicPhoneField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mechanic Phone"
+        android:inputType="phone"
+        android:minHeight="48dp" />
+
+    <!-- Mechanic Password -->
+    <EditText
+        android:id="@+id/mechanicPasswordField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:minHeight="48dp" />
+
+</LinearLayout>

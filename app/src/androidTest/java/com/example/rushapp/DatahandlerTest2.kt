@@ -1,11 +1,13 @@
 package com.example.rushapp
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import androidx.test.core.app.ApplicationProvider
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -179,11 +181,86 @@ class DatahandlerTest2 {
             println("Invoice $index: $invoice")
         }
 
-        // Optionally, verify specific values if you know the existing data
-        // Example: Check that the totalCost of the first invoice matches an expected value
-        //val expectedTotalCost = 300.00 // Replace with the actual expected value
-        //assertEquals(expectedTotalCost, firstInvoice["totalCost"])
+
     }
+    @Test
+    fun testInsertNewMechanic() {
+        val testName = "Unit Test Mechanic"
+        val testEmail = "unittestmechanic@example.com"
+        val testPassword = "unittestpassword"
+        val testPhone = "123-456-7890"
+        val testWorkshopId: Long? = 1 // Replace with a valid workshop ID
+
+        val success = dataHandler.insertNewMechanic(
+            name = testName,
+            email = testEmail,
+            password = testPassword,
+            phone = testPhone,
+            workshopId = testWorkshopId
+        )
+
+        assertTrue("Mechanic should be inserted successfully", success)
+    }
+
+    @Test
+    fun testGetAllServices() {
+        val db = dataHandler.dbHelper.writableDatabase
+
+        // Insert mock data for testing
+        val mockServices = listOf(
+            ContentValues().apply {
+                put("mechanicId", 1L)
+                put("vehicleId", 1L)
+                put("date", "2024-11-20")
+                put("serviceType", "Oil Change")
+                put("description", "Full synthetic oil replacement")
+            },
+            ContentValues().apply {
+                put("mechanicId", 2L)
+                put("vehicleId", 2L)
+                put("date", "2024-11-21")
+                put("serviceType", "Brake Inspection")
+                put("description", "Brake pad and rotor check")
+            },
+            ContentValues().apply {
+                put("mechanicId", 3L)
+                put("vehicleId", 3L)
+                put("date", "2024-11-22")
+                put("serviceType", "Tire Rotation")
+                put("description", "Rotate tires for even wear")
+            }
+        )
+
+        // Insert the mock services into the database
+        mockServices.forEach { service ->
+            db.insert("Services", null, service)
+        }
+
+        // Fetch all services using the method under test
+        val allServices = dataHandler.getAllServices(db)
+
+        // Verify the results
+        assert(allServices.isNotEmpty()) { "Services list should not be empty" }
+        assert(allServices.size == mockServices.size) { "Services list size should match the number of inserted services" }
+
+        // Check individual services
+        assert(allServices[0].serviceType == "Oil Change") { "First service type should be 'Oil Change'" }
+        assert(allServices[1].serviceType == "Brake Inspection") { "Second service type should be 'Brake Inspection'" }
+        assert(allServices[2].serviceType == "Tire Rotation") { "Third service type should be 'Tire Rotation'" }
+
+        assert(allServices[0].serviceDescription == "Full synthetic oil replacement") { "First service description should match" }
+        assert(allServices[1].serviceDescription == "Brake pad and rotor check") { "Second service description should match" }
+        assert(allServices[2].serviceDescription == "Rotate tires for even wear") { "Third service description should match" }
+
+        // Clean up test data
+        db.delete("Services", null, null)
+        db.close()
+    }
+
+
+
+
+
 
 
 

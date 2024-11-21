@@ -3,8 +3,10 @@ package com.example.rushapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 
@@ -12,6 +14,13 @@ class NewUserActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.register_account) // Load the register account layout
+
+        // Set up the userType Spinner
+        val userTypes = arrayOf("Admin", "Mechanic", "Customer")
+        val userTypeSpinner = findViewById<Spinner>(R.id.userTypeSpinner)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, userTypes)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        userTypeSpinner.adapter = adapter
 
         val dataHandler = DataHandler(this) // Initialize DataHandler
 
@@ -24,7 +33,7 @@ class NewUserActivity : ComponentActivity() {
         // Register button logic
         val registerButton = findViewById<Button>(R.id.registerTextBtn2)
         registerButton.setOnClickListener {
-            handleRegistration(dataHandler)
+            handleRegistration(dataHandler, userTypeSpinner)
         }
     }
 
@@ -34,18 +43,19 @@ class NewUserActivity : ComponentActivity() {
         finish() // Prevents returning to this screen
     }
 
-    private fun handleRegistration(dataHandler: DataHandler) {
+    private fun handleRegistration(dataHandler: DataHandler, userTypeSpinner: Spinner) {
         val usernameField = findViewById<EditText>(R.id.emailEdt)
         val passwordField = findViewById<EditText>(R.id.passwordEdt)
         val nameField = findViewById<EditText>(R.id.nameEdt)
         val phoneField = findViewById<EditText>(R.id.phoneEdt)
-        val userTypeField = findViewById<EditText>(R.id.userTypeEdt)
 
         val email = usernameField.text.toString().trim()
         val password = passwordField.text.toString().trim()
         val name = nameField.text.toString().trim()
         val phone = phoneField.text.toString().trim()
-        val userType = userTypeField.text.toString().trim()
+
+        // Get the selected user type from the Spinner
+        val userType = userTypeSpinner.selectedItem.toString()
 
         // Validate user input
         if (!validateInput(email, password, name, phone, userType)) return

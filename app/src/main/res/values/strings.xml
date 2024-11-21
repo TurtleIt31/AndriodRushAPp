@@ -13,6 +13,7 @@
     <string name="title_activity_vehicle">VehicleActivity</string>
     <string name="rush_app_logo">Rush Mechanics</string>
     <string name="title_activity_mechanics">MechanicsActivity</string>
+    <string name="title_activity_services">ServicesActivity</string>
 
 
 </resources>

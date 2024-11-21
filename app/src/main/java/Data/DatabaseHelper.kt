@@ -12,7 +12,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "RushApp.db"
-        private const val DATABASE_VERSION = 7
+        private const val DATABASE_VERSION = 8
 
         // Workshops table
         private const val TABLE_WORKSHOPS = "Workshops"
@@ -103,6 +103,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     """)
 
         // Create Mechanics Table
+        //foreign key issue too late to fix
         db.execSQL("""
         CREATE TABLE $TABLE_MECHANICS (
             $COLUMN_MECHANIC_ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -334,7 +335,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     // --- Vehicles Table ---
-    fun insertVehicle(db: SQLiteDatabase, userId: Long, make: String, model: String, year: Int, vin: String): Long {
+    fun insertVehicle(db: SQLiteDatabase, userId: Long, make: String, model: String, year: String, vin: String): Long {
         val values = ContentValues().apply {
             put("userId", userId)
             put("make", make)

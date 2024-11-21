@@ -19,12 +19,6 @@ class BookingsActivity : ComponentActivity() {
         setContentView(R.layout.activity_appointments) // Set the content view to the XML layout
 
 
-       /* val backButton = findViewById<Button>(R.id.backButton)
-        backButton.setOnClickListener {
-            val intent = Intent(this, ProfileActivity::class.java) // Assuming ProfileActivity is the target
-            startActivity(intent)
-            finish() */
-
         // Initialize the database helper
         val db = DatabaseHelper(this)
 
